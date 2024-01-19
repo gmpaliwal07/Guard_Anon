@@ -14,6 +14,28 @@ var openai = new OpenAI({
 app.use(bodyParser.json());
 
 
+app.post('/detectSpam', async (req, res) => {
+    try {
+      const { chunk } = req.body;
+      const response = await openai.createCompletion({
+        engine: "text-davinci-003",
+        prompt: `${promptCrime}\n${chunk}`,
+        temperature: 0.5,
+        max_tokens: 1024,
+        n: 1,
+        stop: null
+      });
+  
+      const services = response.choices[0].text.trim();
+      const temp = services.match(/\d+/g);
+      const result = temp ? parseInt(temp[0]) : null;
+  
+      res.json({ Class: result });
+    } catch (error) {
+      res.status(500).json({ error: "An error occurred while processing the request." });
+    }
+  });
+
 
 
 
