@@ -6,6 +6,11 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 
+var openai = new OpenAI({
+    // apiKey: process.env['OPENAI_API_KEY']
+    apiKey: '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'
+  });
+
 app.use(bodyParser.json());
 
 
