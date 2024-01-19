@@ -55,6 +55,36 @@ app.post('/detectSpam2', async (req, res) => {
   });
   
 
+  app.post('/detectSimilarity', async (req, res) => {
+    try {
+      const { chunk1, chunk2 } = req.body;
+      let countYes = 0;
+  
+      for (const chunk of chunk2) {
+        const response = await openai.createCompletion({
+          engine: "text-davinci-003",
+          prompt: `${promptSimilarity}\n${chunk1}\n${chunk}`,
+          temperature: 0.5,
+          max_tokens: 1024,
+          n: 1,
+          stop: null
+        });
+  
+        const services = response.choices[0].text.trim();
+        const final = services.indexOf('{');
+        const parsedServices = JSON.parse(services.substring(final));
+  
+        if (parsedServices.similar.toLowerCase() === "yes") {
+          countYes++;
+        }
+      }
+  
+      res.json({ 'Total count': chunk2.length, 'Total matches': countYes });
+    } catch (error) {
+      res.status(500).json({ error: "An error occurred while processing the request." });
+    }
+  });
+  
 
 
 app.listen(port, () => {
