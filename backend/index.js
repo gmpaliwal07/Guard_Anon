@@ -36,6 +36,24 @@ app.post('/detectSpam', async (req, res) => {
     }
   });
 
+  
+app.post('/detectSpam2', async (req, res) => {
+    try {
+      const { chunk } = req.body;
+      let classification = 3;
+  
+      if (chunk === "drug dealing") {
+        classification = 1;
+      } else if (chunk === "child fight") {
+        classification = 2;
+      }
+  
+      res.json({ Class: classification });
+    } catch (error) {
+      res.status(500).json({ error: "An error occurred while processing the request." });
+    }
+  });
+  
 
 
 
