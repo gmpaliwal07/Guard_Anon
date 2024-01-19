@@ -5,6 +5,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import { mainnet, polygon, arbitrum } from 'viem/chains'
 import { createWeb3Modal, defaultWagmiConfig, Web3Modal } from '@web3modal/wagmi-react-native'
 import ConnectView from './src/components/ConnectWalletView'
+import FormScreen from './src/components/FormView'
 const projectId = 'd8dab80ccbbfdcc48f5f3870d0df4e1d'
 
 const metadata = {
@@ -32,10 +33,13 @@ createWeb3Modal({
 export default function App() {
   return (
     <WagmiConfig config={wagmiConfig}>
-      <View style = {styles.container}>
+      {/* <View style = {styles.container}>
       <ConnectView />
       </View>
-      <Web3Modal />
+      <Web3Modal /> */}
+      <View style= {styles.container}>
+        <FormScreen />
+      </View>
     </WagmiConfig>
   )
 }
