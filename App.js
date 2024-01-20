@@ -7,7 +7,7 @@ import { mainnet, polygon} from 'viem/chains'
 import { createWeb3Modal, defaultWagmiConfig, Web3Modal } from '@web3modal/wagmi-react-native'
 import ConnectView from './src/components/ConnectWalletView'
 import Onboarding from './src/components/Onboarding';
-import Home from './src/components/HomeScreen';
+import HomeScreen from './src/components/HomeScreen';
 import FormScreen from './src/components/FormView';
 const projectId = 'd8dab80ccbbfdcc48f5f3870d0df4e1d'
 // const Stack = createNativeStackNavigator();
@@ -37,18 +37,18 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <WagmiConfig config={wagmiConfig}>
-   <Web3Modal />
+  
       <NavigationContainer>
       <Stack.Navigator initialRouteName='Onboarding'>
       <Stack.Screen name="onboarding" component={Onboarding}  options={{headerShown : false}}/>
-      <Stack.Screen name="home" component={Home} options={{headerShown : false}}/>
+      <Stack.Screen name="HomeScreen" component={HomeScreen} options={{headerShown : false}}/>
       <Stack.Screen name="connect" component={ConnectView} options={{headerShown : false}}/>
       <Stack.Screen name="form" component={FormScreen} options={{headerShown : false}}/>
 
     </Stack.Navigator>
 
       </NavigationContainer>
-    
+     <Web3Modal />
     </WagmiConfig>
   )
 }

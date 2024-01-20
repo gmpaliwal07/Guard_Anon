@@ -483,7 +483,7 @@ const convertImageToBase64 = async (uri) => {
       margin: 8,
     },
     button: {
-      backgroundColor: "#4630EB",
+      backgroundColor: "#23a0e6",
       fontSize: 20,
       fontWeight: "bold",
       textAlign: "center",

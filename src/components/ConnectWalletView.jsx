@@ -7,7 +7,7 @@ import AppBar from './AppBar';
 
 export default function ConnectWallet({navigation}) {
 
-  const [conn , setConn] = useState([0])
+  const [conn , setConn] = useState(false)
   const [fontsLoaded] = useFonts({
     Inter: require("../../assets/fonts/Inter-Regular.ttf"),
   });
@@ -29,18 +29,19 @@ export default function ConnectWallet({navigation}) {
         paddingTop : "110%"
       }}>
 
-      <W3mButton  connectStyle = {{
-        borderColor : "#d9d9d9",
-        height : "40%",
-        width : "70%",
-        flexDirection : 'row',
-        justifyContent : "center",
-        marginLeft  : "15%",
-      }}
-      
-      onSuccess={() => {
-        setConn=1
-      }}/>
+<W3mButton connectStyle = {{
+ borderColor : "#d9d9d9",
+ height : "40%",
+ width : "70%",
+ flexDirection : 'row',
+ justifyContent : "center",
+ marginLeft : "15%",
+}}
+
+onPress={() => {
+ setConn(true); // Corrected here\a
+ console.log(setConn)
+}}/>
 
       </View>
 
@@ -59,13 +60,14 @@ export default function ConnectWallet({navigation}) {
         justifyContent : "center",
         marginLeft  : "15%",
       }}>
-        <TouchableOpacity  onPress={() => (setConn == 1) ? navigation.navigate("home") : null }>
-          <Text style= {{
-            color : "#fff",
-            textAlign : "center",
-            marginHorizontal : "20%"
-          }}>Homepage</Text>
-        </TouchableOpacity >
+        <TouchableOpacity onPress={() => navigation.navigate("HomeScreen") }>
+ <Text style= {{
+    color : "#fff",
+    textAlign : "center",
+    marginHorizontal : "20%"
+ }}>Homepage</Text>
+</TouchableOpacity >
+
       </View>
     </View>
   </>
