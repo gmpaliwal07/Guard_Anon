@@ -1,17 +1,19 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-var OpenAI = require('openai').OpenAI;
+var express = require('express')
+var json = require('body-parser')
 
+var OpenAI = require('openai')
+var cors = require('cors')
 const app = express();
-const port = process.env.PORT || 3000;
 
+app.use(cors());
+const port = process.env.PORT || 3000;
 
 var openai = new OpenAI({
     // apiKey: process.env['OPENAI_API_KEY']
     apiKey: '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'
   });
 
-app.use(bodyParser.json());
+app.use(json());
 
 
 app.post('/detectSpam', async (req, res) => {
