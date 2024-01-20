@@ -9,7 +9,8 @@ import {
 } from "react-native";
 import LottieView from "lottie-react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
-import {useFonts} from 'expo-font'
+import { useFonts } from "expo-font";
+import AppBar from "./AppBar";
 export default function Onboarding({ navigation }) {
   const animation = useRef(null);
 
@@ -24,19 +25,21 @@ export default function Onboarding({ navigation }) {
   const onboardingData = [
     {
       text: "Blockchain Transparency",
-      description: "Ensure transparent, tamper-resistant complaint records with blockchain-based ",
-     
-      uri: require("../../assets/animation/search.json"), // Replace with the actual image source
+      description:
+        "Ensure transparent, tamper-resistant complaint records with blockchain-based ",
 
+      uri: require("../../assets/animation/search.json"), // Replace with the actual image source
     },
     {
       text: "Decentralized Security",
-      description: "Empower users with Web3 for decentralized identity, enhancing control and security.",
+      description:
+        "Empower users with Web3 for decentralized identity, enhancing control and security.",
       uri: require("../../assets/animation/security.json"),
     },
     {
       text: "Fair Judgment ",
-      description: "Guarantee fair judgments through a transparent and impartial app process",
+      description:
+        "Guarantee fair judgments through a transparent and impartial app process",
       uri: require("../../assets/animation/law.json"),
     },
   ];
@@ -56,51 +59,63 @@ export default function Onboarding({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.imageContainer}>
-        <Image source={require("../../public/bg.png")} />
-      </View>
+    <>
+  
+     <View style={styles.container}>
 
-      <LottieView
-        autoPlay
-        ref={animation}
-        source={onboardingData[currentScreen].uri}
-        style={styles.animation}
+<View style={styles.imageContainer}>
+  <Image source={require("../../public/bg.png")} />
+</View>
+<LottieView
+  autoPlay
+  ref={animation}
+  source={onboardingData[currentScreen].uri}
+  style={styles.animation}
+/>
+
+<Text
+  style={{
+    fontSize: 22,
+    fontWeight: "bold",
+    lineHeight: 36,
+    letterSpacing: 0.25,
+    textAlign: "center",
+    color: "#ffffff",
+    fontFamily: "Inter",
+  }}
+>
+  {onboardingData[currentScreen].text}
+</Text>
+<Text style={styles.desc}>
+  {onboardingData[currentScreen].description}
+</Text>
+<View
+  style={{
+    justifyContent: "space-between",
+    flexDirection: "row",
+    paddingTop: "10%",
+  }}
+>
+  <View style={styles.dotsContainer}>
+    {onboardingData.map((_, index) => (
+      <TouchableOpacity
+        key={index}
+        style={[
+          styles.dot,
+          index === currentScreen ? styles.activeDot : null,
+        ]}
+        onPress={() => setCurrentScreen(index)}
       />
-
-      <Text style={{
-         fontSize: 22,
-         fontWeight: "bold",
-         lineHeight: 36,
-         letterSpacing: 0.25,
-         textAlign: "center",
-         color: "#ffffff",
-         fontFamily : 'Inter'
-      }}>{onboardingData[currentScreen].text}</Text>
-      <Text style={styles.desc}>
-        {onboardingData[currentScreen].description}
-      </Text>
-      <View
-        style={{
-          justifyContent: "space-between",
-          flexDirection: "row",
-          paddingTop: "10%",
-        }}
-      >
-        <View style={styles.dotsContainer}>
-          {onboardingData.map((_, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.dot,
-                index === currentScreen ? styles.activeDot : null,
-              ]}
-              onPress={() => setCurrentScreen(index)}
-            />
-          ))}
-        </View>
-      </View>
-      <View style={{ justifyContent: "space-between", flexDirection: "row", alignContent: "space-around" }}>
+    ))}
+  </View>
+</View>
+<View
+  style={{
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignContent: "space-around",
+  }}
+>
   <TouchableOpacity onPress={handleBack}>
     <LottieView
       autoPlay
@@ -109,7 +124,7 @@ export default function Onboarding({ navigation }) {
       style={[styles.backbtn, { marginRight: "40%" }]}
     />
   </TouchableOpacity>
-  
+
   <TouchableOpacity onPress={handleNext}>
     <LottieView
       autoPlay
@@ -119,8 +134,9 @@ export default function Onboarding({ navigation }) {
     />
   </TouchableOpacity>
 </View>
-
-    </View>
+</View>
+    </>
+   
   );
 }
 
@@ -137,13 +153,12 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     zIndex: 1,
-    
   },
   animation: {
     width: 259,
     height: 259,
     resizeMode: "contain",
-    marginBottom : "15%"
+    marginBottom: "15%",
   },
   dotsContainer: {
     flexDirection: "row",
@@ -166,7 +181,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#ffffff",
     width: "60%",
-    fontFamily : 'Inter'
+    fontFamily: "Inter",
   },
   buttonContainer: {
     flexDirection: "row",
@@ -184,7 +199,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#ffffff",
     fontSize: 16,
-    fontFamily : 'Inter'
+    fontFamily: "Inter",
   },
 
   btn: {

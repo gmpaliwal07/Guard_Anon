@@ -2,12 +2,13 @@ import '@walletconnect/react-native-compat'
 import { WagmiConfig } from 'wagmi'
 import { StyleSheet, Text, View } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native';
-
-import { mainnet, polygon, arbitrum } from 'viem/chains'
+import { createStackNavigator } from '@react-navigation/stack';
+import { mainnet, polygon} from 'viem/chains'
 import { createWeb3Modal, defaultWagmiConfig, Web3Modal } from '@web3modal/wagmi-react-native'
 import ConnectView from './src/components/ConnectWalletView'
-import FormScreen from './src/components/FormView'
 import Onboarding from './src/components/Onboarding';
+import Home from './src/components/HomeScreen';
+import FormScreen from './src/components/FormView';
 const projectId = 'd8dab80ccbbfdcc48f5f3870d0df4e1d'
 // const Stack = createNativeStackNavigator();
 
@@ -22,28 +23,32 @@ const metadata = {
   }
 }
 
-const chains = [mainnet, polygon, arbitrum]
+const chains = [mainnet, polygon]
 
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata })
 
-// 3. Create modal
 createWeb3Modal({
   projectId,
   chains,
   wagmiConfig
 })
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <WagmiConfig config={wagmiConfig}>
-      <View style = {styles.container}>
-      <ConnectView />
-      </View>
-      <Web3Modal />
-      {/* <View style= {styles.container}>
-        {/* <FormScreen /> */}
-        {/* <Onboarding /> */}
-      {/* </View> */} 
+   <Web3Modal />
+      <NavigationContainer>
+      <Stack.Navigator initialRouteName='Onboarding'>
+      <Stack.Screen name="onboarding" component={Onboarding}  options={{headerShown : false}}/>
+      <Stack.Screen name="home" component={Home} options={{headerShown : false}}/>
+      <Stack.Screen name="connect" component={ConnectView} options={{headerShown : false}}/>
+      <Stack.Screen name="form" component={FormScreen} options={{headerShown : false}}/>
+
+    </Stack.Navigator>
+
+      </NavigationContainer>
+    
     </WagmiConfig>
   )
 }
