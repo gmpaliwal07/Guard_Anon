@@ -1,15 +1,6 @@
-import React, { useState,useRef } from "react";
-import {
-  View,
-  Text,
-  Image,
-  Button,
-  StyleSheet,
-  TouchableOpacity,
-  Asset,
-} from "react-native";
+import React, { useState, useRef } from "react";
+import { View, Text, Image, Button, StyleSheet, TouchableOpacity } from "react-native";
 import LottieView from 'lottie-react-native';
-
 import { PanGestureHandler } from 'react-native-gesture-handler';
 
 export default function Onboarding({ navigation }) {
@@ -21,18 +12,17 @@ export default function Onboarding({ navigation }) {
     {
       text: "First Thing ",
       description: "first thing description is here",
-        uri: require('../../assets/animation/search.json'), // Replace with the actual image source
+      uri: require('../../assets/animation/search.json'), // Replace with the actual image source
     },
     {
       text: "Second Thing ",
       description: "second thing description is here",
-      uri: require('../../assets/animation/law.json')
-      //   image: require('./images/second_image.png'), // Replace with the actual image source
+      uri: require('../../assets/animation/law.json'),
     },
     {
       text: "Third Thing ",
       description: "third thing description is here",
-      uri: require('../../assets/animation/security.json')
+      uri: require('../../assets/animation/security.json'),
     },
   ];
 
@@ -52,23 +42,26 @@ export default function Onboarding({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <LottieView
-              autoPlay
-              ref={animation}
+      <View style={styles.imageContainer}>
+        <Image source={require('../../public/backgroundImage.png')}/>
+      </View>
 
+      <LottieView
+        autoPlay
+        ref={animation}
         source={onboardingData[currentScreen].uri}
-        style={styles.image}
+        style={styles.animation}
       />
+
       <Text style={styles.title}>{onboardingData[currentScreen].text}</Text>
       <Text style={styles.desc}>
         {onboardingData[currentScreen].description}
       </Text>
-<View style = {{flex : 1, flexDirection : 'row'}}>
-<TouchableOpacity > 
- <LottieView source={require('../../assets/animation/btn.json')}/>
-</TouchableOpacity>
+<View style = {{justifyContent :"space-between", flexDirection : "row", paddingTop : "10%"}}>
+<TouchableOpacity style={styles.button} onPress={handleBack}>
+          <Text style={styles.buttonText}>Back</Text>
+        </TouchableOpacity>
 <View style={styles.dotsContainer}>
-
         {onboardingData.map((_, index) => (
           <TouchableOpacity
             key={index}
@@ -80,13 +73,13 @@ export default function Onboarding({ navigation }) {
           />
         ))}
       </View>
-      <View > 
-      <TouchableOpacity > 
- <LottieView source={require('../../assets/animation/btn.json')}/>
-</TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleNext}>
+          <Text style={styles.buttonText}>
+            {currentScreen === onboardingData.length - 1 ? "Finish" : "Next"}
+          </Text>
+        </TouchableOpacity>
 </View>
-      
-</View> 
+     
     </View>
   );
 }
@@ -96,13 +89,33 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     backgroundColor: "#222323",
-    paddingVertical : "60%"
+    paddingVertical: "60%",
   },
-  image: {
-    width: 259, // Adjust the width as needed
-    height: 259, // Adjust the height as needed
+  imageContainer: {
+    flexDirection: "row",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    
+    zIndex: 1,
+    paddingStart : "2%"
+  },
+  verticalImage: {
+    width: 50,
+    height: 100,
     resizeMode: "contain",
-    marginBottom : "30%"
+    marginRight: 10,
+  },
+  horizontalImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode : 'stretch'
+  },
+  animation: {
+    width: 259,
+    height: 259,
+    resizeMode: "contain",
+    marginBottom: "30%",
   },
   dotsContainer: {
     flexDirection: "row",
@@ -118,7 +131,6 @@ const styles = StyleSheet.create({
   activeDot: {
     backgroundColor: "#FFFFFF",
   },
-
   title: {
     fontSize: 22,
     fontWeight: "800",
@@ -133,5 +145,22 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     textAlign: "center",
     color: "#ffffff",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "80%",
+    marginTop: 20,
+  },
+  button: {
+    backgroundColor: "#4630EB",
+    padding: 10,
+    borderRadius: 10,
+    width: "48%",
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#ffffff",
+    fontSize: 16,
   },
 });

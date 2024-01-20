@@ -6,10 +6,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { mainnet, polygon, arbitrum } from 'viem/chains'
 import { createWeb3Modal, defaultWagmiConfig, Web3Modal } from '@web3modal/wagmi-react-native'
 import ConnectView from './src/components/ConnectWalletView'
-import Onboarding from './src/components/Onboarding'
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import FormScreen from './src/components/FormView'
+import Onboarding from './src/components/Onboarding';
 const projectId = 'd8dab80ccbbfdcc48f5f3870d0df4e1d'
-const Stack = createNativeStackNavigator();
+// const Stack = createNativeStackNavigator();
 
 const metadata = {
   name: 'Guard Anon RN',
@@ -36,22 +36,20 @@ createWeb3Modal({
 export default function App() {
   return (
     <WagmiConfig config={wagmiConfig}>
-      <View style = {styles.container}>
+      {/* <View style = {styles.container}>
       <ConnectView />
       </View>
-      <Web3Modal />
-      {/* <NavigationContainer>
-      <Stack.Navigator initialRouteName='onBoarding'>
-         <Stack.Screen name="onBoarding" component={Onboarding} options={{headerShown : false}} />
-      <Stack.Screen name="connect" component={ConnectView} />
-    </Stack.Navigator>
-      </NavigationContainer> */}
-
+      <Web3Modal /> */}
+      <View style= {styles.container}>
+        <FormScreen />
+        {/* <Onboarding /> */}
+      </View>
     </WagmiConfig>
   )
 }
 const styles = StyleSheet.create({
   container : {
     flex : 1,
+    backgroundColor : "#222"
   }
 })
