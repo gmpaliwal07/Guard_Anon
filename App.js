@@ -36,14 +36,14 @@ createWeb3Modal({
 export default function App() {
   return (
     <WagmiConfig config={wagmiConfig}>
-      {/* <View style = {styles.container}>
+      <View style = {styles.container}>
       <ConnectView />
       </View>
-      <Web3Modal /> */}
-      <View style= {styles.container}>
-        <FormScreen />
+      <Web3Modal />
+      {/* <View style= {styles.container}>
+        {/* <FormScreen /> */}
         {/* <Onboarding /> */}
-      </View>
+      {/* </View> */} 
     </WagmiConfig>
   )
 }

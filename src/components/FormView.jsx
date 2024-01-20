@@ -333,7 +333,6 @@ const convertImageToBase64 = async (uri) => {
           <TextInput
             style={styles.input}
             placeholder="PINCODE"
-  
             onChangeText={handleProblemChange}    // Problem
             value={description}
             placeholderTextColor={"#ffffff"}
