@@ -16,10 +16,9 @@ import {
   import * as Animatable from 'react-native-animatable';
 
 import { createClient } from '@supabase/supabase-js'
+import {supabase} from "./datatbase/client.js";
 
-const supabaseUrl = 'https://iigppqbwbvuudxnwciny.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZ3BwcWJ3YnZ1dWR4bndjaW55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDU3MTg5NzUsImV4cCI6MjAyMTI5NDk3NX0.1wFVM2Pc8kYmbEA61hwmb9NPtQCJmUqGAeTvsETbiW4'
-const supabase = createClient(supabaseUrl, supabaseKey)
+
   
   // --------------------------------------------------
   import SelectDropdown from 'react-native-select-dropdown'
@@ -35,77 +34,13 @@ const convertImageToBase64 = async (uri) => {
   const base64 = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
   return base64;
 };
-  async function database_create() {
-    try {
-      const { data, error } = await supabase
-      .rpc('create_table', {
-         schema: 'public',
-         table: 'data_description',
-          columns: [
-            { name: 'description', type: 'text' },
-            { name: 'type', type: 'text' },
-            { name: 'datetime', type: 'timestamp' },
-            // { name: 'image', type: 'text' },
-      ],
-   })
-    }catch(e) {
-      console.log(e)
-    }
-   
-  }
-
-// async function insert_data(description, category, selectedDate, imageBase64) {
-//   try {
-//     // Upload the image to Supabase Storage
-//     const { data: uploadData, error: uploadError } = await supabase.storage
-//       .from('your-storage-bucket-name') // Replace 'your-storage-bucket-name' with your actual storage bucket name
-//       .upload(`images/${uuidv4()}.png`, imageBase64, { cacheControl: '3600' });
-
-//     if (uploadError) {
-//       console.error('Error uploading image:', uploadError);
-//       return;
-//     }
-
-//     // Get the public URL of the uploaded image
-//     const imageUrl = uploadData[0].url;
-
-//     // Insert data into the 'problems' table with the image URL
-//     const { data: insertData, error: insertError } = await supabase
-//       .from('problems')
-//       .insert([
-//         {
-//           description,
-//           type: category,
-//           datetime: selectedDate,
-//           image: imageUrl, // Store the image URL in the 'image' column
-//         },
-//       ]);
-
-//     if (insertError) {
-//       console.error('Error inserting data:', insertError);
-//       return;
-//     }
-
-//     console.log('Data inserted successfully:', insertData);
-//   } catch (error) {
-//     console.error('An error occurred:', error);
-//   }
-// }
-
-
-
 
   const category = ["Rape", "Murder", "extortion", "terrorism", "Acid Attack","Bribery","Child Labour","Smuggling", "Tax Fraud"]
   export default function FormScreen() {
   
-    useEffect(() => {
-      database_create()
-
-    
-      return () => {
-        
-      }
-    }, [])
+    useEffect(()=>{
+      fetchPost()
+    },[])
     const title = "Category";
 
     const [description, setDescription] = useState("");
@@ -118,9 +53,32 @@ const convertImageToBase64 = async (uri) => {
     const [selectedDate, setSelectedDate] = useState("Select Date");
     const [selectedTime, setSelectedTime] = useState("Select Time");
     const [proof, setProof] = useState("Show Proof");
-
+    const [url_Img,setUrl_Img]=useState('')
 
     const [showOptions, setShowOptions] = useState(false);
+
+    
+    const [posts,setPosts]=useState([])
+    const [post,setPost]=useState({Description: "",Category: "",date: "",time:"",Img:""})
+    const {Description,Category,data,time, } = post
+
+    async function fetchPost(){
+      var {data} = await supabase
+        .from('data_description')
+        .select()
+      setPosts(data)
+      console.log("data: ",data)
+    }
+
+    async function createPost(){
+      // console.log("create post")
+      await supabase.from('posts').insert([Description,Category,data,time,Img]).single()
+        
+
+        console.log("create post")
+
+    }
+
 
 
     const [selectedOption, setSelectedOption] = useState(null);
@@ -202,20 +160,20 @@ const convertImageToBase64 = async (uri) => {
         // Handle the error, e.g., show an error message to the user
       }
     };
-    // const openImagePicker = async () => {
-    //   let result = await ImagePicker.launchImageLibraryAsync({
-    //     mediaTypes: ImagePicker.MediaTypeOptions.All,
-    //     allowsMultipleSelection: true,
-    //     quality: 0.5,
-    //     videoQuality: 1,
-    //     aspect: [4, 3],
-    //   });
-    //   console.log(result);
+    const openImagePicker = async () => {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsMultipleSelection: true,
+        quality: 0.5,
+        videoQuality: 1,
+        aspect: [4, 3],
+      });
+      console.log(result);
   
-    //   if (!result.canceled) {
-    //     setProof(result.uri); // Use result.uri to get the image URI
-    //   }
-    // };
+      if (!result.canceled) {
+        setProof(result.uri); // Use result.uri to get the image URI
+      }
+    };
   
     const StackVerify = () => {
       console.log("implement Stack verification");
@@ -226,22 +184,52 @@ const convertImageToBase64 = async (uri) => {
     };
 
  //----------------------------------
- async function insert_data(description, selectedDate, Img_url) {
-  console.log("data insertion in progress")
-  const { data, error } = await supabase
-    .from('problems')
-    .insert([
-      {
-        description: { description },
-        type: { selectedCrimeCategory },
-        datetime: { selectedDate },
-        // image: { Img_url }, // Replace with actual value
-      },
-    ])
-    .select();
-}
+ async function handleSubmition() {
+  try {
+    console.log("handle submit");
+    // Prepare the data to be sent in the request body
+    const requestData = {
+      Description : description,
+      Category: selectedOption,
+      date: selectedDate,
+      time: selectedTime,
+      Img: url_Img, // Update this with the actual image data if needed
+    }; 
+
+    
+    console.log(requestData) 
+    // data=requestData
+    // Make a POST request to insert data into your Supabase database
+    const { data, error } = await supabase
+      .from('data_description')
+      .insert([requestData]);
+      console.log(error);
+//--------------------------------
+  //   if (error) {
+  //     console.error('Error inserting data:', error);
+  //     // Handle the error, e.g., show an error message to the user
+  //   } else {
+  //     console.log('Data inserted successfully:', data);
+  //     // You can update your state or perform any other action based on the response
+  //     // Clear the form fields or navigate to another screen if needed
+  //     setDescription("");
+  //     setSelectedOption(null);
+  //     setSelectedDate("Select Date");
+  //     setSelectedTime("Select Time");
+  //     // setImageBase64("");
+  //   }
+  } catch (error) {
+    console.error('An error occurred while making the request:', error);
+    // Handle the error, e.g., show an error message to the user
+  }
+  //------------------------------------
+
+};
+
+// console.log(requestData) 
 
 //   }---------------------------------------
+
 
 
 
@@ -257,26 +245,12 @@ const convertImageToBase64 = async (uri) => {
             style={styles.input}
             placeholder="Problem"
             multiline={true}
-            onChangeText={handleProblemChange}    // Problem
-            value={description}
+            onChangeText={text => setPost({ ...post, Description: text })}
+            value={post.Description}
             placeholderTextColor={"#ffffff"}
           />
   
-          {/* menu action
-          <SelectDropdown
-  defaultButtonText="Select the crime category"
-  data={category}
-  onSelect={(selectedItem, index) => {
-    console.log(selectedItem, index);
-    setSelectedCrimeCategory(selectedItem);
-  }}
-  buttonTextAfterSelection={(selectedItem, index) => {
-    return selectedCrimeCategory || "Select the crime category";
-  }}
-  rowTextForSelection={(item, index) => {
-    return item;
-  }}
-/> */}
+        
 
 
 <View>
@@ -326,16 +300,16 @@ const convertImageToBase64 = async (uri) => {
             style={styles.input}
             placeholder="Area of Occurence"
             multiline = {true}
-            onChangeText={handleProblemChange}    // Problem
-            value={description}
+            // onChangeText={handleProblemChange}    // Problem
+            // value={}
             placeholderTextColor={"#ffffff"}
           />
           <TextInput
             style={styles.input}
             placeholder="PINCODE"
   
-            onChangeText={handleProblemChange}    // Problem
-            value={description}
+            // onChangeText={handleProblemChange}    // Problem
+            // value={description}
             placeholderTextColor={"#ffffff"}
           />
 
@@ -344,16 +318,16 @@ const convertImageToBase64 = async (uri) => {
             style={styles.input1}
             placeholder="City"
       
-            onChangeText={handleProblemChange}    // Problem
-            value={description}
+            // onChangeText={handleProblemChange}    // Problem
+            // value={description}
             placeholderTextColor={"#ffffff"}
           />
             <TextInput
             style={styles.input1}
             placeholder="State"
           
-            onChangeText={handleProblemChange}    // Problem
-            value={description}
+            // onChangeText={handleProblemChange}    // Problem
+            // value={description}
             placeholderTextColor={"#ffffff"}
           />
           </View>
@@ -375,7 +349,7 @@ const convertImageToBase64 = async (uri) => {
               alignItems : "center",
             }}>
             <MaterialIcons style = {{marginBottom : "7%"}} name="add-photo-alternate" size={24} color="#d9d9d9" />
-            <Text style = {{fontSize : 14, color : "#d9d9d9"}}>Upload Proof</Text>
+            <Text style = {{fontSize : 14, color : "#d9d9d9"}} onPress={url_Img}>Upload Proof</Text>
             </View>
           </View>
 </TouchableOpacity>
@@ -386,9 +360,11 @@ const convertImageToBase64 = async (uri) => {
                 onPress={async () => {
                   try {
                     console.log("implement submit request ");
+                    // {createPost()}
                     // const base64Image = await convertImageToBase64(result.uri);
                     // setImageBase64(base64Image);
-                    insert_data(description, category, selectedDate, {/*setImageBase64*/})
+                    {handleSubmition()}
+                    // insert_data(description, category, selectedDate, {/*setImageBase64*/})
                     console.log("Data inserted")
                   }catch(e) {
                     console.log(e)
@@ -403,7 +379,7 @@ const convertImageToBase64 = async (uri) => {
       </ScrollView>
     );
   }
-  
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
