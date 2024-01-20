@@ -1,28 +1,43 @@
 import React, { useState, useRef } from "react";
-import { View, Text, Image, Button, StyleSheet, TouchableOpacity } from "react-native";
-import LottieView from 'lottie-react-native';
-import { PanGestureHandler } from 'react-native-gesture-handler';
-
+import {
+  View,
+  Text,
+  Image,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import LottieView from "lottie-react-native";
+import { PanGestureHandler } from "react-native-gesture-handler";
+import {useFonts} from 'expo-font'
 export default function Onboarding({ navigation }) {
   const animation = useRef(null);
 
   const [currentScreen, setCurrentScreen] = useState(0);
-
+  const [fontsLoaded] = useFonts({
+    Elinath: require("../../assets/fonts/ELNATH.ttf"),
+    Inter: require("../../assets/fonts/Inter-Regular.ttf"),
+  });
+  if (!fontsLoaded) {
+    return <Text>Loading...</Text>;
+  }
   const onboardingData = [
     {
-      text: "First Thing ",
-      description: "first thing description is here",
-      uri: require('../../assets/animation/search.json'), // Replace with the actual image source
+      text: "Blockchain Transparency",
+      description: "Ensure transparent, tamper-resistant complaint records with blockchain-based ",
+     
+      uri: require("../../assets/animation/search.json"), // Replace with the actual image source
+
     },
     {
-      text: "Second Thing ",
-      description: "second thing description is here",
-      uri: require('../../assets/animation/law.json'),
+      text: "Decentralized Security",
+      description: "Empower users with Web3 for decentralized identity, enhancing control and security.",
+      uri: require("../../assets/animation/security.json"),
     },
     {
-      text: "Third Thing ",
-      description: "third thing description is here",
-      uri: require('../../assets/animation/security.json'),
+      text: "Fair Judgment ",
+      description: "Guarantee fair judgments through a transparent and impartial app process",
+      uri: require("../../assets/animation/law.json"),
     },
   ];
 
@@ -43,7 +58,7 @@ export default function Onboarding({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image source={require('../../public/backgroundImage.png')}/>
+        <Image source={require("../../public/bg.png")} />
       </View>
 
       <LottieView
@@ -53,33 +68,58 @@ export default function Onboarding({ navigation }) {
         style={styles.animation}
       />
 
-      <Text style={styles.title}>{onboardingData[currentScreen].text}</Text>
+      <Text style={{
+         fontSize: 22,
+         fontWeight: "bold",
+         lineHeight: 36,
+         letterSpacing: 0.25,
+         textAlign: "center",
+         color: "#ffffff",
+         fontFamily : 'Inter'
+      }}>{onboardingData[currentScreen].text}</Text>
       <Text style={styles.desc}>
         {onboardingData[currentScreen].description}
       </Text>
-<View style = {{justifyContent :"space-between", flexDirection : "row", paddingTop : "10%"}}>
-<TouchableOpacity style={styles.button} onPress={handleBack}>
-          <Text style={styles.buttonText}>Back</Text>
-        </TouchableOpacity>
-<View style={styles.dotsContainer}>
-        {onboardingData.map((_, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.dot,
-              index === currentScreen ? styles.activeDot : null,
-            ]}
-            onPress={() => setCurrentScreen(index)}
-          />
-        ))}
+      <View
+        style={{
+          justifyContent: "space-between",
+          flexDirection: "row",
+          paddingTop: "10%",
+        }}
+      >
+        <View style={styles.dotsContainer}>
+          {onboardingData.map((_, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.dot,
+                index === currentScreen ? styles.activeDot : null,
+              ]}
+              onPress={() => setCurrentScreen(index)}
+            />
+          ))}
+        </View>
       </View>
-      <TouchableOpacity style={styles.button} onPress={handleNext}>
-          <Text style={styles.buttonText}>
-            {currentScreen === onboardingData.length - 1 ? "Finish" : "Next"}
-          </Text>
-        </TouchableOpacity>
+      <View style={{ justifyContent: "space-between", flexDirection: "row", alignContent: "space-around" }}>
+  <TouchableOpacity onPress={handleBack}>
+    <LottieView
+      autoPlay
+      ref={animation}
+      source={require("../../assets/animation/btn-black.json")}
+      style={[styles.backbtn, { marginRight: "40%" }]}
+    />
+  </TouchableOpacity>
+  
+  <TouchableOpacity onPress={handleNext}>
+    <LottieView
+      autoPlay
+      ref={animation}
+      source={require("../../assets/animation/btn-blue.json")}
+      style={[styles.btn, { marginLeft: 10 }]}
+    />
+  </TouchableOpacity>
 </View>
-     
+
     </View>
   );
 }
@@ -96,30 +136,18 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    
     zIndex: 1,
-    paddingStart : "2%"
-  },
-  verticalImage: {
-    width: 50,
-    height: 100,
-    resizeMode: "contain",
-    marginRight: 10,
-  },
-  horizontalImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode : 'stretch'
+    
   },
   animation: {
     width: 259,
     height: 259,
     resizeMode: "contain",
-    marginBottom: "30%",
+    marginBottom : "15%"
   },
   dotsContainer: {
     flexDirection: "row",
-    marginVertical: 20,
+    marginVertical: 10,
   },
   dot: {
     width: 8,
@@ -131,20 +159,14 @@ const styles = StyleSheet.create({
   activeDot: {
     backgroundColor: "#FFFFFF",
   },
-  title: {
-    fontSize: 22,
-    fontWeight: "800",
-    lineHeight: 36,
-    letterSpacing: 0.25,
-    textAlign: "center",
-    color: "#ffffff",
-  },
   desc: {
     fontSize: 14,
     fontWeight: "400",
     lineHeight: 26,
     textAlign: "center",
     color: "#ffffff",
+    width: "60%",
+    fontFamily : 'Inter'
   },
   buttonContainer: {
     flexDirection: "row",
@@ -162,5 +184,16 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#ffffff",
     fontSize: 16,
+    fontFamily : 'Inter'
+  },
+
+  btn: {
+    width: 70,
+    height: 70,
+  },
+  backbtn: {
+    width: 70,
+    height: 70,
+    transform: [{ rotate: "180deg" }],
   },
 });
