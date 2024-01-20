@@ -10,22 +10,110 @@ import {
   } from "react-native";
   import Axios from 'axios';
   
+  // Super Base section
+  import * as FileSystem from 'expo-file-system';
+
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = 'https://iigppqbwbvuudxnwciny.supabase.co'
+const supabaseKey = process.env.SUPABASE_KEY
+const supabase = createClient(supabaseUrl, supabaseKey)
   
-  
+  // --------------------------------------------------
   import SelectDropdown from 'react-native-select-dropdown'
-  import React, { useState } from "react";
+  import React, { useEffect, useState } from "react";
   import Checkbox from "expo-checkbox";
   
   import DateTimePickerModal from "react-native-modal-datetime-picker";
   import * as ImagePicker from "expo-image-picker";
   
   
+const convertImageToBase64 = async (uri) => {
+  const base64 = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
+  return base64;
+};
+  async function database_create() {
+    const { data, error } = await supabase
+    .rpc('create_table', {
+       schema: 'public',
+       table: 'problems',
+        columns: [
+          { name: 'description', type: 'text' },
+          { name: 'type', type: 'text' },
+          { name: 'datetime', type: 'timestamp' },
+          { name: 'image', type: 'text' },
+    ],
+ })
+  }
+ //----------------------------------
+//   async function insert_data(description, category,selectedDate, Img_url) {
+//     const { data, error } = await supabase
+//  .from('problems')
+//  .insert([
+//     { 
+//       description: {description}, 
+//       type: {category}, 
+//       datetime: {selectedDate}, 
+//       image: {Img_url}, 
+//     },
+//   ])
+
+//   }---------------------------------------
+async function insert_data(description, category, selectedDate, imageBase64) {
+  try {
+    // Upload the image to Supabase Storage
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('your-storage-bucket-name') // Replace 'your-storage-bucket-name' with your actual storage bucket name
+      .upload(`images/${uuidv4()}.png`, imageBase64, { cacheControl: '3600' });
+
+    if (uploadError) {
+      console.error('Error uploading image:', uploadError);
+      return;
+    }
+
+    // Get the public URL of the uploaded image
+    const imageUrl = uploadData[0].url;
+
+    // Insert data into the 'problems' table with the image URL
+    const { data: insertData, error: insertError } = await supabase
+      .from('problems')
+      .insert([
+        {
+          description,
+          type: category,
+          datetime: selectedDate,
+          image: imageUrl, // Store the image URL in the 'image' column
+        },
+      ]);
+
+    if (insertError) {
+      console.error('Error inserting data:', insertError);
+      return;
+    }
+
+    console.log('Data inserted successfully:', insertData);
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+}
+
+
+
+
   const category = ["Rape", "Murder", "extortion", "terrorism", "Acid Attack","Bribery","Child Labour","Smuggling", "Tax Fraud"]
   export default function FormScreen() {
   
-  
-  
-    const [text, setText] = useState("");
+    useEffect(() => {
+      database_create()
+
+    
+      return () => {
+        second
+      }
+    }, [])
+    
+    const [description, setDescription] = useState("");
+    const[imageBase64, setImageBase64] = useState("");
     const [stack, setStack] = useState("");
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
@@ -87,11 +175,11 @@ import {
       try {
         // Prepare the data to be sent in the request body
         const requestData = {
-          chunk: text,  // You can modify this based on your backend expectations
+          chunk: description,  // You can modify this based on your backend expectations
         };
     
         // Make a POST request to the backend endpoint
-        const response = await Axios.post('http:/localhost:3000', requestData);
+        const response = await Axios.post('http://localhost:3000', requestData);
         
         // Handle the response from the server
         console.log(response.data);
@@ -193,8 +281,11 @@ import {
             <TouchableOpacity>
               <Text
                 style={styles.button}
-                onPress={() => {
+                onPress={async () => {
                   console.log("implement submit request ");
+                  const base64Image = await convertImageToBase64(result.uri);
+                  setImageBase64(base64Image);
+                  insert_data(description, category, selectedDate, setImageBase64)
                 }}
               >
                 Submit
