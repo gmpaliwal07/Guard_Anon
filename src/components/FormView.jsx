@@ -28,6 +28,7 @@ import {supabase} from "./datatbase/client.js";
   import DateTimePickerModal from "react-native-modal-datetime-picker";
   import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
+import AppBar from "./AppBar";
   
   
 const convertImageToBase64 = async (uri) => {
@@ -236,9 +237,11 @@ const convertImageToBase64 = async (uri) => {
 
 
     return (
-      <ScrollView>
+      <>
+      
+         <ScrollView>
         <View style={styles.container}>
-          <Text style={styles.text}>Details Form </Text>
+          <Image source={require('../../public/Details Form.png')}/>
           <Text style={styles.desc}>Details of the form Discriptions there you can wright any details od the app that you needed </Text>
 
           <TextInput
@@ -310,6 +313,9 @@ const convertImageToBase64 = async (uri) => {
   
             // onChangeText={handleProblemChange}    // Problem
             // value={description}
+
+            onChangeText={handleProblemChange}    // Problem
+            value={description}
             placeholderTextColor={"#ffffff"}
           />
 
@@ -351,6 +357,15 @@ const convertImageToBase64 = async (uri) => {
             <MaterialIcons style = {{marginBottom : "7%"}} name="add-photo-alternate" size={24} color="#d9d9d9" />
             <Text style = {{fontSize : 14, color : "#d9d9d9"}} onPress={url_Img}>Upload Proof</Text>
             </View>
+<TextInput
+            style={styles.input}
+            placeholder="Share Proof"
+            multiline = {true}
+            onChangeText={handleProblemChange}    // Problem
+            value={description}
+            placeholderTextColor={"#ffffff"}
+          />
+            
           </View>
 </TouchableOpacity>
         
@@ -371,20 +386,24 @@ const convertImageToBase64 = async (uri) => {
                   }
                 }}
               >
-                Save & Next
+                Submit
               </Text>
             </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
+      </>
+   
     );
   }
 
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      padding: 20,
-      backgroundColor : "#222"
+      padding: 30,
+      paddingTop :"30%",
+      backgroundColor : "#222",
+      paddingVertical : "70%"
     },
     text: {
       color : "#fff",
@@ -394,6 +413,7 @@ const convertImageToBase64 = async (uri) => {
       margin: 10,
       lineHeight : 36,
       letterSpacing : 0.65
+      
     },
     desc : {
       color: "#fff", 
